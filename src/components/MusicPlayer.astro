@@ -1,8 +1,18 @@
 ---
 import { websiteConfig } from '../config/website.config.js';
+const metingApi = websiteConfig.musicPlayer.metingApi;
+const server = websiteConfig.musicPlayer.server;
+const type = websiteConfig.musicPlayer.type;
+const id = websiteConfig.musicPlayer.id;
+const volume = websiteConfig.musicPlayer.volume;
 ---
 
-<div id="music-player" class="music-player">
+<div id="music-player" class="music-player"
+     data-meting-api={metingApi}
+     data-server={server}
+     data-type={type}
+     data-id={id}
+     data-volume={volume}>
     <!-- 播放器按钮 -->
     <button id="music-toggle" class="music-toggle" aria-label="音乐播放器">
         <i class="mdi mdi-music"></i>
@@ -90,7 +100,7 @@ let currentIndex = 0;
 let audio = null;
 let isPlaying = false;
 let isMuted = false;
-let volume = 0.8;
+let volume = 0.8; // 默认值，稍后从配置覆盖
 let isShuffled = false;
 let isRepeating = 0; // 0: 不循环, 1: 单曲循环, 2: 列表循环
 
@@ -99,6 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const musicToggle = document.getElementById('music-toggle');
     const musicPanel = document.getElementById('music-panel');
     const musicClose = document.getElementById('music-close');
+    
+    // 从 data-* 属性读取配置
+    const playerEl = document.getElementById('music-player');
+    const configVolume = parseFloat(playerEl.dataset.volume);
+    if (!isNaN(configVolume) && configVolume >= 0 && configVolume <= 1) {
+        volume = configVolume;
+    }
     
     // 初始化音频元素
     audio = new Audio();
@@ -116,6 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 加载播放列表
     loadPlaylist();
+    
+    // 更新音量滑块和图标
+    setVolume(volume);
     
     if (musicToggle && musicPanel) {
         musicToggle.addEventListener('click', () => {
@@ -172,7 +192,15 @@ function initUIEvents() {
 // 加载播放列表
 async function loadPlaylist() {
     try {
-        const response = await fetch('https://api.i-meto.com/meting/api?server=netease&type=playlist&id=5186526688');
+        // 从 data-* 属性读取配置
+        const playerEl = document.getElementById('music-player');
+        const metingApi = playerEl.dataset.metingApi || 'https://api.injahow.cn/meting/';
+        const server = playerEl.dataset.server || 'netease';
+        const type = playerEl.dataset.type || 'playlist';
+        const id = playerEl.dataset.id || '750445279';
+        const apiUrl = `${metingApi}?server=${server}&type=${type}&id=${id}`;
+
+        const response = await fetch(apiUrl);
         if (!response.ok) throw new Error('API请求失败');
         
         const data = await response.json();
