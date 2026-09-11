@@ -356,6 +356,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     justify-content: center;
     gap: 1.5rem;
     flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
 }
 
 #serverAddress {
@@ -368,8 +371,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     color: var(--color-text);
     font-weight: 700;
     min-width: 200px;
+    max-width: 100%;
     text-align: center;
     box-shadow: var(--shadow-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1.4;
 }
 
 .copy-btn {
@@ -452,12 +459,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     
     .server-info-section {
-        max-width: 95%;
-        padding: 0 1rem;
+        max-width: 100%;
+        padding: 0;
     }
-    
+
     .server-info-card {
-        padding: 2rem 1.5rem;
+        padding: 1.75rem 1.25rem;
     }
     
     .server-address {
@@ -478,14 +485,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     .address-container {
         flex-direction: column;
         gap: 1rem;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
     }
-    
+
     #serverAddress {
-        font-size: 1.2rem;
-        padding: 0.75rem 1.5rem;
+        font-size: clamp(0.85rem, 3.2vw, 1.2rem);
+        padding: 0.75rem 0.85rem;
         min-width: auto;
         width: 100%;
-        max-width: 280px;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        line-height: 1.45;
     }
     
     .copy-btn {
